@@ -284,7 +284,8 @@ export default function Storefront() {
   const [regAddress, setRegAddress] = useState<SelectedAddressValue>({
     carrier: 'nova_poshta',
     city: 'м. Київ',
-    branch: 'Відділення №1: вул. Хрещатик, 8 (Вантажне)',
+    cityRef: '8d5a980d-391c-11dd-90d9-001a92567626',
+    branch: '',
   })
   const [authError, setAuthError] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
@@ -1285,7 +1286,7 @@ export default function Storefront() {
           </div>
 
           {completedOrder ? (
-            /* Екран успішно оформленого замовлення та звіту про відправку в Telegram */
+            /* Екран успішно оформленого замовлення */
             <div className="rounded-[28px] border border-[#bde5f0] bg-[#eff8fa] p-8 sm:p-12">
               <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3.5 py-1.5 text-xs font-semibold text-emerald-800">
                 <Check className="size-4" /> Замовлення #{completedOrder.order.id} успішно оформлено!
@@ -1296,7 +1297,7 @@ export default function Storefront() {
               </h2>
 
               <p className="mt-2 text-sm text-[#536268]">
-                Інформацію про ваше замовлення та обрані товари відправлено до спеціального Telegram-бота магазину.
+                Ваше замовлення прийнято в обробку. Ми зв’яжемося з вами найближчим часом для підтвердження відправки.
               </p>
 
               <div className="mt-6 grid gap-4 rounded-2xl bg-white p-5 text-sm sm:grid-cols-2">
@@ -1328,15 +1329,6 @@ export default function Storefront() {
                     {completedOrder.order.address.branch}
                   </p>
                 </div>
-              </div>
-
-              <div className="mt-4 rounded-2xl border border-[#d7e8eb] bg-white p-4 text-xs text-[#183b46]">
-                <div className="flex items-center gap-2 font-semibold">
-                  <Send className="size-3.5" /> Статус Telegram-бота:
-                </div>
-                <p className="mt-1 text-[#536268]">
-                  {completedOrder.telegramMessage}
-                </p>
               </div>
 
               <button
@@ -1586,14 +1578,10 @@ export default function Storefront() {
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-[#183b46] py-3.5 text-sm font-medium text-white transition hover:bg-[#245360] disabled:opacity-50"
                 >
                   {checkoutLoading
-                    ? 'Відправка в Telegram-бот...'
+                    ? 'Оформлення замовлення...'
                     : 'Купити (Оформити замовлення)'}{' '}
                   <Check />
                 </button>
-
-                <p className="mt-3 text-center text-[11px] text-[#718084]">
-                  Після натискання «Купити» замовлення миттєво надсилається в Telegram-бот.
-                </p>
               </aside>
             </div>
           )}
@@ -1856,9 +1844,9 @@ export default function Storefront() {
       )}
 
       <footer className="mx-auto flex max-w-6xl items-center justify-between border-t border-[#e5e9e8] px-5 py-7 text-xs text-[#98a3a6] sm:px-8 lg:px-10">
-        <span>© 2026 mellow studio — Нова Пошта • Укрпошта • Telegram Bot</span>
+        <span>© 2026 mellow studio</span>
         <span className="hidden sm:block">
-          Готово до розгортання на Cloudflare Pages & D1
+          Thoughtful clothing, simply made.
         </span>
       </footer>
     </main>
