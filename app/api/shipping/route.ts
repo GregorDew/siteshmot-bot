@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getBranchesForCity, searchCities } from '@/lib/shipping-directory'
 import type { DeliveryCarrier } from '@/lib/db-customers'
 
+export const runtime = 'edge'
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const type = searchParams.get('type') || 'cities'

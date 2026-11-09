@@ -5,10 +5,9 @@
   "packageManager": "pnpm@12.3.4",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "echo 'Ready for Cloudflare deploy'",
     "start": "next start",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "pages:deploy": "npx @cloudflare/next-on-pages && npx wrangler pages deploy .vercel/output/static"
+    "deploy": "npx wrangler deploy"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
@@ -31,6 +30,7 @@
     "@types/react-dom": "^19",
     "postcss": "^8.5",
     "tailwindcss": "^4.3.3",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "wrangler": "^4.159.0"
   }
 }

@@ -186,26 +186,6 @@ function getMemoryStore(): ProductRecord[] {
 }
 
 export async function getAllProducts(): Promise<ProductRecord[]> {
-  // спроба зчитати з локального файлу db/products.json (якщо доступний Node fs)
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const dbPath = path.join(process.cwd(), 'db', 'products_data.json')
-    try {
-      const raw = await fs.readFile(dbPath, 'utf-8')
-      const parsed = JSON.parse(raw) as ProductRecord[]
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        globalForProducts.__PRODUCTS_DB__ = parsed
-        return parsed
-      }
-    } catch {
-      await fs.mkdir(path.dirname(dbPath), { recursive: true })
-      await fs.writeFile(dbPath, JSON.stringify(INITIAL_PRODUCTS, null, 2), 'utf-8')
-      return INITIAL_PRODUCTS
-    }
-  } catch {
-    // Cloudflare Edge / середовище без fs
-  }
   return getMemoryStore()
 }
 
@@ -221,17 +201,6 @@ export async function createProductInDb(
   }
   const updated = [newProduct, ...current]
   globalForProducts.__PRODUCTS_DB__ = updated
-
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const dbPath = path.join(process.cwd(), 'db', 'products_data.json')
-    await fs.mkdir(path.dirname(dbPath), { recursive: true })
-    await fs.writeFile(dbPath, JSON.stringify(updated, null, 2), 'utf-8')
-  } catch {
-    // Edge runtime fallback
-  }
-
   return newProduct
 }
 
@@ -239,14 +208,5 @@ export async function deleteProductFromDb(id: number): Promise<boolean> {
   const current = await getAllProducts()
   const updated = current.filter((p) => p.id !== id)
   globalForProducts.__PRODUCTS_DB__ = updated
-
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const dbPath = path.join(process.cwd(), 'db', 'products_data.json')
-    await fs.writeFile(dbPath, JSON.stringify(updated, null, 2), 'utf-8')
-  } catch {
-    // Edge runtime fallback
-  }
   return true
 }

@@ -85,40 +85,11 @@ function getMemoryCustomersDb(): CustomersDatabaseData {
 }
 
 async function readCustomersDb(): Promise<CustomersDatabaseData> {
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const dbPath = path.join(process.cwd(), 'db', 'customers_data.json')
-    try {
-      const raw = await fs.readFile(dbPath, 'utf-8')
-      const parsed = JSON.parse(raw) as CustomersDatabaseData
-      if (parsed && Array.isArray(parsed.customers)) {
-        globalForCustomers.__CUSTOMERS_DB__ = parsed
-        return parsed
-      }
-    } catch {
-      const initial: CustomersDatabaseData = { customers: [], orders: [] }
-      await fs.mkdir(path.dirname(dbPath), { recursive: true })
-      await fs.writeFile(dbPath, JSON.stringify(initial, null, 2), 'utf-8')
-      return initial
-    }
-  } catch {
-    // Edge runtime fallback
-  }
   return getMemoryCustomersDb()
 }
 
 async function writeCustomersDb(data: CustomersDatabaseData): Promise<void> {
   globalForCustomers.__CUSTOMERS_DB__ = data
-  try {
-    const fs = await import('fs/promises')
-    const path = await import('path')
-    const dbPath = path.join(process.cwd(), 'db', 'customers_data.json')
-    await fs.mkdir(path.dirname(dbPath), { recursive: true })
-    await fs.writeFile(dbPath, JSON.stringify(data, null, 2), 'utf-8')
-  } catch {
-    // Edge runtime fallback
-  }
 }
 
 export async function getAllCustomers(): Promise<CustomerRecord[]> {

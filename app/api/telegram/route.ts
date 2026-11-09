@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAllOrders, getBotAdmins, saveBotAdmin } from '@/lib/db-customers'
 
+export const runtime = 'edge'
+
 /**
  * Webhook-маршрут для Telegram-бота: коли адмін пише боту /start або /orders,
  * бот автоматично запам'ятовує його (без вводу chat_id) та відповідає.

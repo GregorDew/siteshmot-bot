@@ -7,6 +7,8 @@ import {
   type DeliveryCarrier,
 } from '@/lib/db-customers'
 
+export const runtime = 'edge'
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const email = searchParams.get('email')

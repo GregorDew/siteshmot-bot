@@ -8,6 +8,8 @@ import {
 } from '@/lib/db-customers'
 import { sendOrderToTelegramBot } from '@/lib/telegram-bot'
 
+export const runtime = 'edge'
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
