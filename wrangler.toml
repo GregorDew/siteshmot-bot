@@ -1,0 +1,22 @@
+name = "mellow-clothing-store"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+# Перша база даних: База даних покупців та адрес доставки (Cloudflare D1)
+[[d1_databases]]
+binding = "DB_CUSTOMERS"
+database_name = "mellow-customers-db"
+database_id = "00000000-0000-0000-0000-000000000001"
+migrations_dir = "db/migrations"
+
+# Друга база даних: База даних товарів (Cloudflare D1)
+[[d1_databases]]
+binding = "DB_PRODUCTS"
+database_name = "mellow-products-db"
+database_id = "00000000-0000-0000-0000-000000000002"
+migrations_dir = "db/migrations"
+
+# ВАЖЛИВО: Ніколи не вписуйте сюди TELEGRAM_BOT_TOKEN відкритим текстом!
+# Додавайте токен як зашифрований секрет через панель Cloudflare (Settings -> Variables and Secrets -> Encrypt)
+# або командою: npx wrangler pages secret put TELEGRAM_BOT_TOKEN
