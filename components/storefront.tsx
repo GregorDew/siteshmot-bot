@@ -77,7 +77,6 @@ function Header({
   onHome,
   onSearch,
   onAccount,
-  onDatabases,
 }: {
   cartCount: number
   customer: CustomerRecord | null
@@ -85,7 +84,6 @@ function Header({
   onHome: () => void
   onSearch: () => void
   onAccount: () => void
-  onDatabases: () => void
 }) {
   return (
     <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
@@ -107,24 +105,9 @@ function Header({
         <button onClick={onAccount} className="transition hover:text-[#183b46]">
           {customer ? `Кабінет (${customer.firstName})` : 'Реєстрація / Вхід'}
         </button>
-        <button
-          onClick={onDatabases}
-          className="flex items-center gap-1.5 rounded-full border border-[#d7e8eb] bg-[#eff8fa] px-3 py-1.5 text-[#183b46] transition hover:bg-[#dff1f5]"
-        >
-          <Database className="size-3.5" /> Бази даних (Покупці + Товари)
-        </button>
       </nav>
 
       <div className="flex items-center gap-2">
-        <button
-          onClick={onDatabases}
-          aria-label="Бази даних"
-          title="Керування БД Покупців та БД Товарів"
-          className="grid size-10 place-items-center rounded-full border border-[#dce2e2] text-[#214751] transition hover:bg-[#eff9fb] md:hidden"
-        >
-          <Database />
-        </button>
-
         <button
           onClick={onSearch}
           aria-label="Пошук"
@@ -735,7 +718,6 @@ export default function Storefront() {
           setTimeout(() => document.getElementById('store-search')?.focus(), 0)
         }}
         onAccount={() => setView('account')}
-        onDatabases={() => setView('databases')}
       />
 
       {/* ==================== ЕКРАН 1: ВІТРИНА ТОВАРІВ (SHOP) ==================== */}
@@ -977,7 +959,7 @@ export default function Storefront() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
-                    <ShieldCheck className="size-3.5" /> Зареєстрований покупець (БД №1)
+                    <ShieldCheck className="size-3.5" /> Особистий кабінет покупця
                   </span>
                   <h1 className="mt-3 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">
                     {customer.firstName} {customer.lastName}
@@ -1253,7 +1235,7 @@ export default function Storefront() {
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-[#183b46] py-3.5 text-sm font-medium text-white transition hover:bg-[#255563] disabled:opacity-50"
                 >
                   {authLoading
-                    ? 'Збереження у БД покуців...'
+                    ? 'Збереження профілю...'
                     : authMode === 'register'
                       ? 'Зареєструватися та зберегти адресу'
                       : 'Увійти в кабінет'}
@@ -1585,261 +1567,6 @@ export default function Storefront() {
               </aside>
             </div>
           )}
-        </section>
-      )}
-
-      {/* ==================== ЕКРАН 5: КЕРУВАННЯ ДВОМА БАЗАМИ ДАНИХ (DATABASES) ==================== */}
-      {view === 'databases' && (
-        <section className="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 lg:px-10">
-          <button
-            onClick={() => setView('shop')}
-            className="mb-6 flex items-center gap-2 text-sm text-[#718084] hover:text-[#183b46]"
-          >
-            <ArrowLeft /> Повернутися до вітрини
-          </button>
-
-          <div className="mb-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#78aeba]">
-              Cloudflare D1 / Локальне сховище
-            </p>
-            <h1 className="mt-1 text-3xl font-medium tracking-[-0.04em] sm:text-4xl">
-              Панель керування двома базами даних
-            </h1>
-          </div>
-
-          <div className="grid gap-8 lg:grid-cols-2">
-            {/* БАЗА ДАНИХ №1: ПОКУПЦІ */}
-            <div className="rounded-[28px] border border-[#d7e8eb] bg-[#eff8fa] p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <span className="rounded-full bg-[#183b46] px-3 py-1 text-[10px] font-semibold uppercase text-white">
-                    База даних №1
-                  </span>
-                  <h2 className="mt-2 text-xl font-semibold text-[#183b46]">
-                    База покупців ({allCustomersDb.length}) та Замовлень ({allOrdersDb.length})
-                  </h2>
-                </div>
-              </div>
-
-              {allCustomersDb.length === 0 ? (
-                <p className="rounded-2xl bg-white p-4 text-xs text-[#536268]">
-                  Поки що немає зареєстрованих покупців. Зареєструйтеся на вкладці «Реєстрація», щоб побачити запис тут.
-                </p>
-              ) : (
-                <div className="max-h-[520px] space-y-3 overflow-y-auto pr-1">
-                  {allCustomersDb.map((cust) => (
-                    <div
-                      key={cust.id}
-                      className="rounded-2xl border border-[#d7e8eb] bg-white p-4 text-xs space-y-1.5"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-sm text-[#183b46]">
-                          {cust.firstName} {cust.lastName}
-                        </span>
-                        <span className="text-[10px] text-[#829096]">
-                          ID: {cust.id}
-                        </span>
-                      </div>
-                      <p className="text-[#536268]">
-                        📞 <b>{cust.phone}</b> | ✉️ <b>{cust.email}</b>
-                      </p>
-                      {cust.googleAccount && (
-                        <p className="text-[#183b46]">
-                          🔵 Google: <b>{cust.googleAccount}</b>
-                        </p>
-                      )}
-                      <div className="pt-1">
-                        <span className="font-semibold text-[#536268]">
-                          Адреси доставки ({cust.addresses.length}):
-                        </span>
-                        {cust.addresses.map((a) => (
-                          <p key={a.id} className="text-[#1f3034]">
-                            • [{a.carrier === 'nova_poshta' ? 'Нова Пошта' : 'Укрпошта'}] {a.city}, {a.branch}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* БАЗА ДАНИХ №2: ТОВАРИ */}
-            <div className="rounded-[28px] border border-[#d7e8eb] bg-white p-6">
-              <span className="rounded-full bg-[#78aeba] px-3 py-1 text-[10px] font-semibold uppercase text-white">
-                База даних №2
-              </span>
-              <h2 className="mt-2 text-xl font-semibold text-[#183b46]">
-                База товарів ({productsList.length}) — Додати новий товар
-              </h2>
-
-              <form onSubmit={handleCreateProduct} className="mt-4 space-y-3 text-xs">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-1 block font-medium text-[#536268]">
-                      Назва товару *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newProdName}
-                      onChange={(e) => setNewProdName(e.target.value)}
-                      placeholder="Напр. Вовняний светр"
-                      className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block font-medium text-[#536268]">
-                      Ціна (грн) *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      value={newProdPrice}
-                      onChange={(e) => setNewProdPrice(e.target.value)}
-                      className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-1 block font-medium text-[#536268]">
-                      Вид товару *
-                    </label>
-                    <select
-                      value={newProdCategory}
-                      onChange={(e) => {
-                        const val = e.target.value as ProductCategoryType
-                        setNewProdCategory(val)
-                        if (val === 'footwear') setNewProdSizes('38, 39, 40, 41, 42, 43')
-                        else if (val === 'accessory') setNewProdSizes('One Size')
-                        else setNewProdSizes('XS, S, M, L, XL')
-                      }}
-                      className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                    >
-                      <option value="upper_clothing">Верхній одяг</option>
-                      <option value="lower_clothing">Нижній одяг</option>
-                      <option value="footwear">Взуття</option>
-                      <option value="accessory">Аксесуар</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-1 block font-medium text-[#536268]">
-                      Стать *
-                    </label>
-                    <select
-                      value={newProdGender}
-                      onChange={(e) =>
-                        setNewProdGender(e.target.value as ProductGender)
-                      }
-                      className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                    >
-                      <option value="female">Жіночий</option>
-                      <option value="male">Чоловічий</option>
-                      <option value="unisex">Унісекс</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-1 block font-medium text-[#536268]">
-                      Матеріал *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newProdMaterial}
-                      onChange={(e) => setNewProdMaterial(e.target.value)}
-                      placeholder="100% Бавовна / Шкіра"
-                      className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block font-medium text-[#536268]">
-                      Розміри (через кому) *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newProdSizes}
-                      onChange={(e) => setNewProdSizes(e.target.value)}
-                      placeholder="38, 39, 40 або S, M, L"
-                      className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-1 block font-medium text-[#536268]">
-                    Опис товару *
-                  </label>
-                  <textarea
-                    required
-                    rows={2}
-                    value={newProdDesc}
-                    onChange={(e) => setNewProdDesc(e.target.value)}
-                    placeholder="Детальний опис крою, особливостей та догляду..."
-                    className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1 block font-medium text-[#536268]">
-                    URL фото (необов’язково)
-                  </label>
-                  <input
-                    type="url"
-                    value={newProdImage}
-                    onChange={(e) => setNewProdImage(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full rounded-xl border border-[#dce2e2] px-3 py-2 outline-none focus:border-[#183b46]"
-                  />
-                </div>
-
-                {prodCreateNotice && (
-                  <div className="rounded-xl bg-emerald-50 p-2.5 text-emerald-800 font-medium">
-                    {prodCreateNotice}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="w-full rounded-full bg-[#183b46] py-2.5 font-medium text-white transition hover:bg-[#285865]"
-                >
-                  + Додати товар у Базу Даних №2
-                </button>
-              </form>
-
-              <div className="mt-6 max-h-60 space-y-2 overflow-y-auto border-t border-[#e5e9e8] pt-4">
-                {productsList.map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between rounded-xl border border-[#e5e9e8] p-2.5 text-xs"
-                  >
-                    <div>
-                      <p className="font-semibold text-[#1f3034]">
-                        {p.name} — {p.price} грн
-                      </p>
-                      <p className="text-[11px] text-[#536268]">
-                        {CATEGORY_LABELS[p.categoryType]} | {GENDER_LABELS[p.gender]} |{' '}
-                        {p.material} | Розміри: {p.sizes.join(', ')}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteProduct(p.id)}
-                      title="Видалити товар"
-                      className="rounded-lg p-1.5 text-[#829096] hover:bg-red-50 hover:text-red-600"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </section>
       )}
 

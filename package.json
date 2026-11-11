@@ -5,7 +5,7 @@
   "packageManager": "pnpm@12.3.4",
   "scripts": {
     "dev": "next dev",
-    "build": "npm install -g wrangler && echo 'Ready for Cloudflare deploy'",
+    "build": "rm -rf app/api && (npx next build || npx next build) && npm install -g wrangler",
     "start": "next start",
     "deploy": "npx wrangler deploy"
   },
